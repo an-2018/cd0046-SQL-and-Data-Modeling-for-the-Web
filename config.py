@@ -10,4 +10,5 @@ DEBUG = True
 
 
 # TODO IMPLEMENT DATABASE URL
-SQLALCHEMY_DATABASE_URI = '<Put your local database url>'
+SQLALCHEMY_DATABASE_URI = f'postgresql://{os.environ.get("USER")}:{os.environ.get("PASS")}@{os.environ.get("HOST")}:{os.environ.get("DB_PORT")}/{os.environ.get("DB")}'
+print(SQLALCHEMY_DATABASE_URI)
