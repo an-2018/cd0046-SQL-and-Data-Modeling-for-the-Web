@@ -20,6 +20,7 @@ genre_venue = db.Table('genre_venue',
     db.Column('venue_id', db.Integer, db.ForeignKey('venues.id'))
 )
 
+# implement any missing fields, as a database migration using Flask-Migrate
 class Venue(db.Model):
     __tablename__ = 'venues'
 
@@ -27,7 +28,7 @@ class Venue(db.Model):
     name = db.Column(db.String, nullable=False)
     # city = db.Column(db.String(120))
     # state = db.Column(db.String(120))
-    address = db.Column(db.String(120))
+    address = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(120))
     # genres = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
@@ -44,7 +45,19 @@ class Venue(db.Model):
     # Many-to-One Location
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=False)
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    def __repr__(self) -> str:
+        return f"Venue: \
+            {self.name} \
+            {self.location_id} \
+            {self.address} \
+            {self.phone} \
+            {self.image_link} \
+            {self.facebook_link} \
+            {self.website_link} \
+            {self.seeking_talent} \
+            {self.seeking_description} \
+            {self.genres } \
+            "
 
 
 class Artist(db.Model):
@@ -59,12 +72,12 @@ class Artist(db.Model):
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     website_link = db.Column(db.String(120))
-    seeking_talent = db.Column(db.Boolean, default=False)
+    seeking_venue = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String(120))
 
     shows = db.relationship('Show', backref='artist', lazy=True)
     genres = db.relationship('Genre',secondary=genre_artist, backref='artists', lazy=True)
-    
+
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=False)
 
     def __repr__(self):
@@ -116,7 +129,6 @@ class Show(db.Model):
   __tablename__ = 'shows'
 
   id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(120), nullable=False)
   
   venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'), nullable=False)
 
@@ -125,7 +137,10 @@ class Show(db.Model):
   start_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
   def __repr__(self):
-        return '<Show %r>' % self.name
+        return f"<Show \
+            {self.venue_id} \
+            {self.artist_id} \
+            >"
 
   # One-to-One Venue
   # One-to-One Artist
